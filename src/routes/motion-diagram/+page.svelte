@@ -56,7 +56,7 @@
 
 </script>
 
-<main class="flex flex-col justify-center p-4">
+<main class="flex flex-col justify-center p-4 bg-primary-50 rounded-xl">
 	<div id='button-group' class = 'flex flex-row p-4'>
 		<Button on:click={saveDivAsImage}><FileExportOutline/></Button>
 		<Toggle bind:checked={showControlButtons}>Show Control Buttons</Toggle>

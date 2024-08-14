@@ -70,7 +70,7 @@
 
 <main class="flex flex-col justify-center p-4 items-center">
 	<div id='Title' class='m-4 p-2 text-2xl font-bold flex flex-row rounded-xl border-1'>
-		<Button color='light' class='mr-3' size='xs' on:click={()=>{editTitle = !editTitle}}>
+		<Button color='alternative' class='mr-3' size='xs' on:click={()=>{editTitle = !editTitle}}>
 			<EditOutline/>
 		</Button>
 		{#if editTitle}
@@ -84,9 +84,9 @@
 	<div class="flex flex-row">
 		{#if (showControlButtons)}
 			<div id='button-container flex flex-row m-4 p-4'>
-				<Button on:click={()=>{dispatch('deleteMe', {id: id})}
+				<Button class='bg-accent hover:bg-red-800' on:click={()=>{dispatch('deleteMe', {id: id})}
 				}><TrashBinOutline/></Button>
-				<Button on:click={()=>{
+				<Button class='bg-accent hover:bg-secondary-600' on:click={()=>{
 					posList = [];
 					velList = [];
 					accList = [];
