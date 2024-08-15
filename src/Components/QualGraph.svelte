@@ -2,11 +2,15 @@
 	import { Stage, Layer, Line, Circle, Path, Group} from 'svelte-konva';
 
 
-	import {Dot, GraphPath, Point} from './kinematicsTypes.js';
+	import type {Dot, GraphPath, Point} from './kinematicsTypes.js';
     import { Label, Select, Input, Button} from 'flowbite-svelte';
     import {TrashBinOutline, ChevronDownOutline, ChevronRightOutline, RefreshOutline} from 'flowbite-svelte-icons';
 	import { Dropdown, DropdownItem } from 'flowbite-svelte';
 	import EditLabel from './EditLabel.svelte';
+
+
+	import {createEventDispatcher} from 'svelte';
+	let dispatch = createEventDispatcher();
 
 	let name: string = 'QualGraph';
 
@@ -43,7 +47,8 @@
     let origin = {x:margin, y:gridSize+margin};  // Assuming origin is at bottom left
 
 	let gridList: any[] = [];
-	let id_num: number = 0;
+	export let id: number = 0;
+	let id_num = 0;
 
 	let xAxisTicks = [1, 2, 3, 4, 5, 6];
 	let yAxisTicks = [1, 2, 3, 4, 5, 6];
@@ -206,7 +211,7 @@
 			addNewDot(pos);
 			if (dotList.length > 1){
 				addingDot = false;
-				previewGraph = getNewGraphPath(dotList, 0, 0.5) || null;
+				getPreviewGraphPath(dotList, 0, 0.5);
 			}
 			
 		} else {
@@ -288,13 +293,18 @@
 </script>	
 
 
-<div id='graph-container' class='bg-red-100 p-4 flex flex-col'>
+<div id='graph-container' class='p-4 flex flex-col border-2'>
 	{#if showControlButtons}
-		<div id='button-header' class="justify-left flex flex-row">
+		<div id='button-header' class="justify-left flex flex-row m-2 p-2">
 			<Button color="red" size="xs" variant="outline" class="mr-2"
 				on:click={handleDelete}
 				>
 				<RefreshOutline size='xs' class="text-white-500"/>
+			</Button>
+			<Button color="red" size="xs" variant="outline" class="mr-2"
+				on:click={()=>dispatch('deleteMe', {id:id})}
+				>
+				<TrashBinOutline size='xs' class="text-white-500"/>
 			</Button>
 			<div class='flex flex-col mr-2'>
 				<Label for="select-y-label" class="">Select y-label</Label>
@@ -352,7 +362,8 @@
 						}} />
 					{/each}
 					{#if addingDot && previewDot}
-						<Circle config={previewDot} />
+						<Circle config={{x:previewDot.x, y:previewDot.y, radius: previewDot.radius,
+							fill: previewDot.fill, opacity: previewDot.opacity}} />
 					{/if}
 				</Layer>
 				<Layer config = {{id: 'path_layer'}}>

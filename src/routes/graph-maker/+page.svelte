@@ -2,6 +2,7 @@
 	import { Stage, Layer, Line, Circle, Path} from 'svelte-konva';
   	import DragArrow from '../../Components/QualGraph.svelte';
 	import EditLabel from '../../Components/EditLabel.svelte';
+	import type {GraphPath, Point} from '../../Components/kinematicsTypes';
 
     import { Label, Select, Input, Button, Checkbox, Toggle} from 'flowbite-svelte';
     import {TrashBinOutline, FileExportOutline, ChevronDownOutline, CirclePlusOutline, RefreshOutline} from 'flowbite-svelte-icons';
@@ -17,29 +18,32 @@
 	let showControlButtons:boolean = true;
 
 	let idIncrement = 0;
-	$: graphGroups = [{id:idIncrement++, graphs:[]}];
 
 	const prepSaveDivAsImage = ()=>
 	{
 		showControlButtons = false;
 		saveDivAsImage();
 	}
+	let groupIDIncrement = 0;
+	let graphIDIncrement = 0;
 
-	type Graph = {id:number};
-	type GraphGroup = {id:number, graphs: Graph[]};
-
-	const addNewGroup = () =>
-	{
-		graphGroups = [...graphGroups, {id:idIncrement++, graphs:[]}];
-		console.log(graphGroups);
+	type Graph = {
+		graphID: number;
+		groupID: number;
+		pathList: GraphPath[];
 	}
 
-	const addNewGraphToGroup = (group:GraphGroup) =>
-	{
-		// group = [...group, 1]
-		let newGraph:Graph = {id:idIncrement++};
-		group.graphs = [...(group.graphs), newGraph];
-		console.log(group);
+	type Group = {
+		id: number;
+		graphsIDs: number[];
+	}
+
+	let graphs: Graph[] = [];
+	let groupIDs: number[] = [0];
+
+	const addNewGraph = (groupID: number) =>{
+		let newGraph:Graph = {graphID:(++graphIDIncrement), groupID: groupID, pathList:[]};
+		graphs = [...graphs, newGraph];
 	}
 
 	const saveDivAsImage = async () => {
@@ -52,34 +56,52 @@
 		link.click();
 		document.body.removeChild(link);
 	};
+
+	const handleDelete = (e:CustomEvent) => {
+		graphs = graphs.filter(graph => graph.graphID !== e.detail.id);
+	}
+
+	const resetAll = () =>{
+		graphs = [];
+		groupIDs = [0];
+		graphIDIncrement = 0;
+		groupIDIncrement = 0;
+		addNewGraph(0);
+	}
+
+	addNewGraph(0);
+
 </script>
 
 <main class="flex flex-col justify-center" >
 	<div id='button-group' class = 'flex flex-row p-4'>
+		<Button on:click={resetAll}><RefreshOutline/></Button>
 		<Button on:click={prepSaveDivAsImage}><FileExportOutline/></Button>
 		<Toggle bind:checked={showControlButtons}>Show Control Buttons</Toggle>
 	</div>
 
 	<div id="capture" bind:this={divToCapture} class='bg-black-200 w-max mx-auto'>
-		{#each graphGroups as group}
 
-			<div class='flex flex-col w-max'>
-				<EditLabel text='Graph' size='xl2' {showControlButtons}/>
-				<div class="flex flex-row flex-wrap m-4 bg-blue-100">
-					<QualGraph width={200} height={200} labels={{x:'Time', y:'Velocity'}} color='green' {showControlButtons}/>
+			<!-- <EditLabel text='Graph Group' size='xl2' {showControlButtons}/> -->
+			<div class="flex flex-col flex-wrap">
+				{#each groupIDs as group (group)}
+				<div class="flex flex-row flex-wrap p-2">
 
-					<!-- {#each group.graphs as graph (graph.id)}
-						{console.log(graph)}
-						<QualGraph width={200} height={200} labels={{x:'Time', y:'Velocity'}} color='green' {showControlButtons}/>
+					{#each graphs as graph (graph.graphID)}
+						{#if graph.groupID == group}
+							<QualGraph id={graph.graphID} on:deleteMe={handleDelete} bind:pathList={graph.pathList} width={200} height={200} labels={{x:'Time', y:'Velocity'}} color='green' {showControlButtons}/>
+						{/if}
 					{/each}
 					{#if showControlButtons}
-						<Button on:click={()=>{addNewGraphToGroup(group)}}><CirclePlusOutline/></Button>
-					{/if} -->
-				</div>
-			</div>
-		{/each}
+						<Button on:click={()=>addNewGraph(group)}><CirclePlusOutline/></Button>
+					{/if}
+					</div>
+
+				{/each}
+				
+				
 			{#if showControlButtons}
-			<Button on:click={()=>{addNewGroup}}>
+			<Button on:click={()=>{groupIDs=[...groupIDs, ++groupIDIncrement]}}>
 				<CirclePlusOutline class='mx-2'/> Add New Group
 			</Button>
 			{/if}

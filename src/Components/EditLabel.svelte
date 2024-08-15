@@ -31,7 +31,7 @@
 
 </script>
 
-<div id='fbd-label' class='m-4 p-2 {fontSize} font-bold flex flex-row rounded-xl border-1'
+<div id='fbd-label' class='{fontSize} font-bold flex flex-row rounded-xl border-1'
 
     >
     {#if showControlButtons}
