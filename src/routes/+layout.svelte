@@ -13,8 +13,8 @@
 
 <Navbar  >
 	<NavBrand href="/">
-	  <object data="IALogo.svg" class="me-3 h-6 sm:h-9" alt="Inertial Apple Logo" />
-	  <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Inertial Apple</span>
+		<object data="/IALogo.svg" class="me-3 h-6 sm:h-9" title="Inertial Apple Logo" />
+		<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Inertial Apple</span>
 
 	</NavBrand>
 	<NavHamburger  />
