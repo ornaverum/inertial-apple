@@ -18,6 +18,7 @@
     export let height: number = 500;
 
     export let color: string = 'blue';
+	export let title: string = 'Graph Title';
 
     export let labels = {
         x: 'Time',
@@ -328,7 +329,7 @@
 			</Dropdown>
 		</div>
 	{/if}
-	<EditLabel text={'Graph Title'} size='xs' {showControlButtons}/>
+	<EditLabel text={title} size='xs' {showControlButtons}/>
 	<div class='flex flex-row '>
 		<div id='y-label-container' class="my-auto relative h-30 w-30">
 			<div id='ylabel' class='transform -rotate-90 label-menu'>

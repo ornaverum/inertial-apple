@@ -28,6 +28,7 @@
 	let graphIDIncrement = 0;
 
 	type Graph = {
+		title: string;
 		graphID: number;
 		groupID: number;
 		pathList: GraphPath[];
@@ -42,7 +43,7 @@
 	let groupIDs: number[] = [0];
 
 	const addNewGraph = (groupID: number) =>{
-		let newGraph:Graph = {graphID:(++graphIDIncrement), groupID: groupID, pathList:[]};
+		let newGraph:Graph = {title: 'Graph Title', graphID:(++graphIDIncrement), groupID: groupID, pathList:[]};
 		graphs = [...graphs, newGraph];
 	}
 
@@ -69,6 +70,20 @@
 		addNewGraph(0);
 	}
 
+	const labelGroup = (groupID:number) => {
+		console.log(groupID);
+
+		let tempGraphs = [...graphs];
+		let n = 0;
+		tempGraphs.forEach((graph) => {
+			console.log(graph);
+			if(graph.groupID === groupID){
+				graph.title = String.fromCharCode(65 + n++);
+			}
+		});
+		graphs = [...tempGraphs];
+	}
+
 	addNewGraph(0);
 
 </script>
@@ -86,10 +101,13 @@
 			<div class="flex flex-col flex-wrap">
 				{#each groupIDs as group (group)}
 				<div class="flex flex-row flex-wrap p-2">
-
+					{#if showControlButtons}
+						<Button on:click={()=>{groupIDs = groupIDs.filter(g => g !== group)}}><TrashBinOutline/></Button>
+						<Button on:click={()=>labelGroup(group)}>Label A-...</Button>
+					{/if}
 					{#each graphs as graph (graph.graphID)}
 						{#if graph.groupID == group}
-							<QualGraph id={graph.graphID} on:deleteMe={handleDelete} bind:pathList={graph.pathList} width={200} height={200} labels={{x:'Time', y:'Velocity'}} color='green' {showControlButtons}/>
+							<QualGraph bind:title={graph.title} id={graph.graphID} on:deleteMe={handleDelete} bind:pathList={graph.pathList} width={200} height={200} labels={{x:'Time', y:'Velocity'}} color='green' {showControlButtons}/>
 						{/if}
 					{/each}
 					{#if showControlButtons}
