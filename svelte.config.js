@@ -1,4 +1,5 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
+// import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 // import adapter from '@sveltejs/adapter-vercel';
 
@@ -15,6 +16,9 @@ const config = {
 		adapter: adapter({
 			// see below for options that can be set here
 		}),
+		paths: {
+            base: process.env.NODE_ENV === 'production' ? '/sveltekit-github-pages' : '',
+        }
 	}
 };
 

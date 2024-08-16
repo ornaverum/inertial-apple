@@ -1,5 +1,6 @@
 <script>
 	import '../app.css';
+	import { base } from '$app/paths';
 	import { DarkMode } from 'flowbite-svelte';
 	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
 	let darkmodebtn =
@@ -19,12 +20,12 @@
 	</NavBrand>
 	<NavHamburger  />
 	<NavUl >
-	  <NavLi href="/">Home</NavLi>
-	  <NavLi href="/free-body-diagram">Free Body Diagram</NavLi>
-	  <NavLi href="/motion-diagram">Motion Diagram</NavLi>
-	  <NavLi href="/graph-maker">Graph Maker</NavLi>
-	  <NavLi href="/grapher">Grapher</NavLi>
-	  <NavLi href="/vid-analysis">Video Analysis</NavLi>
+	  <NavLi href="{base}/">Home</NavLi>
+	  <NavLi href="{base}/free-body-diagram">Free Body Diagram</NavLi>
+	  <NavLi href="{base}/motion-diagram">Motion Diagram</NavLi>
+	  <NavLi href="{base}/graph-maker">Graph Maker</NavLi>
+	  <NavLi href="{base}/grapher">Grapher</NavLi>
+	  <NavLi href="{base}/vid-analysis">Video Analysis</NavLi>
 	</NavUl>
   </Navbar>
 
