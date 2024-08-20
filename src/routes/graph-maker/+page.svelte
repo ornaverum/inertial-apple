@@ -29,6 +29,7 @@
 
 	type Graph = {
 		title: string;
+		labels: {x:string, y:string};
 		graphID: number;
 		groupID: number;
 		pathList: GraphPath[];
@@ -43,7 +44,7 @@
 	let groupIDs: number[] = [0];
 
 	const addNewGraph = (groupID: number) =>{
-		let newGraph:Graph = {title: 'Graph Title', graphID:(++graphIDIncrement), groupID: groupID, pathList:[]};
+		let newGraph:Graph = {title: 'List', graphID:(++graphIDIncrement), groupID: groupID, pathList:[], labels: {x:'Time', y:'Position'}};
 		graphs = [...graphs, newGraph];
 	}
 
@@ -70,7 +71,7 @@
 		addNewGraph(0);
 	}
 
-	const labelGroup = (groupID:number) => {
+	const labelGroupTitle = (groupID:number) => {
 		console.log(groupID);
 
 		let tempGraphs = [...graphs];
@@ -82,7 +83,41 @@
 			}
 		});
 		graphs = [...tempGraphs];
-	}
+	};
+
+	const labelGroupYAxis = (groupID:number, yaxis:string) => {
+		console.log('Label Y axes', groupID, yaxis);
+
+		let tempGraphs = [...graphs];
+		let n = 0;
+		tempGraphs.forEach((graph) => {
+			console.log(graph);
+			if(graph.groupID === groupID){
+				graph.labels.y = yaxis;
+			}
+		});
+		graphs = [...tempGraphs];
+	};
+
+	const yLabelOptions = [
+		{value: 'Position', name: 'Position', color:'blue'},
+		{value: 'Velocity', name: 'Velocity', color:'green'},
+		{value: 'Acceleration', name: 'Acceleration', color:'red'},
+	];
+
+	const svgPathXpYp:string = 'M 2 2 V 13 H 13';
+	const svgPathXpYn:string = 'M 2 2 V 13 M 2 8 H 13';
+	const svgPathXnYp:string = 'M 2 13 H 13 M 8 2 V 13';
+	const svgPathXnYn:string = 'M 8 2 V 14 M 2 8 H 14';
+
+	const axisSets = [
+		{svg: svgPathXpYp, x: false, y: false},
+		{svg: svgPathXpYn, x: false, y: true},
+		{svg: svgPathXnYp, x: true, y: false},
+		{svg: svgPathXnYn, x: true, y: true},
+	];
+
+	let ylabel:string = 'Position';
 
 	addNewGraph(0);
 
@@ -90,8 +125,8 @@
 
 <main class="flex flex-col justify-center" >
 	<div id='button-group' class = 'flex flex-row p-4'>
-		<Button on:click={resetAll}><RefreshOutline/></Button>
-		<Button on:click={prepSaveDivAsImage}><FileExportOutline/></Button>
+		<Button on:click={resetAll} class='mx-1'><RefreshOutline/></Button>
+		<Button on:click={prepSaveDivAsImage} class='mx-1'><FileExportOutline/></Button>
 		<Toggle bind:checked={showControlButtons}>Show Control Buttons</Toggle>
 	</div>
 
@@ -101,13 +136,21 @@
 			<div class="flex flex-col flex-wrap">
 				{#each groupIDs as group (group)}
 				<div class="flex flex-row flex-wrap p-2">
-					{#if showControlButtons}
-						<Button on:click={()=>{groupIDs = groupIDs.filter(g => g !== group)}}><TrashBinOutline/></Button>
-						<Button on:click={()=>labelGroup(group)}>Label A-...</Button>
+					{#if showControlButtons && groupIDs.length > 0}
+
+						<div class='flex flex-col m-1'>
+							<Button class='my-1' on:click={()=>{groupIDs = groupIDs.filter(g => g !== group)}}><TrashBinOutline/></Button>
+							<Button class='my-1' on:click={()=>labelGroupTitle(group)}>Label A-...</Button>
+							<div class='flex flex-col mr-2'>
+								<Label for="select-y-label" class="">Select y-label for group</Label>
+								<Select on:change={()=>labelGroupYAxis(group, ylabel)} id='select-y-label' class="" size="sm" items={yLabelOptions} bind:value={ylabel} />
+							</div>
+							<Button class='my-1'>Set axis type for group</Button>
+						</div>
 					{/if}
 					{#each graphs as graph (graph.graphID)}
 						{#if graph.groupID == group}
-							<QualGraph bind:title={graph.title} id={graph.graphID} on:deleteMe={handleDelete} bind:pathList={graph.pathList} width={200} height={200} labels={{x:'Time', y:'Velocity'}} color='green' {showControlButtons}/>
+							<QualGraph bind:title={graph.title} id={graph.graphID} on:deleteMe={handleDelete} bind:pathList={graph.pathList} width={200} height={200} bind:labels={graph.labels} color='green' {showControlButtons}/>
 						{/if}
 					{/each}
 					{#if showControlButtons}

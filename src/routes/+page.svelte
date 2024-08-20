@@ -11,7 +11,7 @@
 	</p>
 </Card>
 
-<Button>Default</Button>
+<!-- <Button>Default</Button>
 <Button color="alternative">Alternative</Button>
 <Button color="dark">Dark</Button>
 <Button color="light">Light</Button>
@@ -20,15 +20,9 @@
 <Button color="red">Red</Button>
 <Button color="yellow">Yellow</Button>
 <Button color="purple">Purple</Button>
-<Button class='bg-secondary-300 hover:bg-secondary-500'>Sky</Button>
+<Button class='bg-secondary-300 hover:bg-secondary-500'>Sky</Button> -->
 
-https://html2canvas.hertzen.com/
 
-https://codesandbox.io/s/svelte-screenshot-dd51g?file=/App.svelte
+<a href='https://svelte.dev/repl/434e0b14546747688401e8808c060a23?version=3.47.0
+'>Canvas as svelte component</a>
 
-Canvas as svelte component
-https://svelte.dev/repl/434e0b14546747688401e8808c060a23?version=3.47.0
-
-Svelte component to image
-
-https://github.com/StephenGunn/svelte-component-to-image
