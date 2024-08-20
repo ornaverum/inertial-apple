@@ -130,7 +130,7 @@
 		<Toggle bind:checked={showControlButtons}>Show Control Buttons</Toggle>
 	</div>
 
-	<div id="capture" bind:this={divToCapture} class='bg-black-200 w-max mx-auto'>
+	<div id="capture" bind:this={divToCapture} class='w-max mx-auto'>
 
 			<!-- <EditLabel text='Graph Group' size='xl2' {showControlButtons}/> -->
 			<div class="flex flex-col flex-wrap">

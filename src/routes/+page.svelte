@@ -4,10 +4,10 @@
 
 </script>
 
-<Card class='bg-primary-100'>
-	<h1 class="text-3xl dark:text-white">Welcome to SvelteKit</h1>
-	<p class="dark:text-white">
-		Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation
+<Card class='bg-primary-100 mx-auto w-max'>
+	<h1 class="text-3xl dark:text-white w-max">Welcome to Inertial Apple</h1>
+	<p class="dark:text-white my-4">
+		Physics tools for students and teachers. Still under development.
 	</p>
 </Card>
 
@@ -23,6 +23,5 @@
 <Button class='bg-secondary-300 hover:bg-secondary-500'>Sky</Button> -->
 
 
-<a href='https://svelte.dev/repl/434e0b14546747688401e8808c060a23?version=3.47.0
-'>Canvas as svelte component</a>
+<a href='https://svelte.dev/repl/434e0b14546747688401e8808c060a23?version=3.47.0'>Canvas as svelte component</a>
 

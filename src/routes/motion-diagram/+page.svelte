@@ -52,13 +52,21 @@
 		mdArray = mdArray.filter(md => md.id !== e.detail.id);
 	}
 
+	const labelTitle = ()=>{
+		mdArray.forEach((md,i) => {
+			md.title = String.fromCharCode(65 + i);;
+		});
+		mdArray = [...mdArray];
+	}
+
 	addNewMD();
 
 </script>
 
-<main class="flex flex-col justify-center p-4 bg-primary-50 rounded-xl">
-	<div id='button-group' class = 'flex flex-row p-4'>
+<main class="flex flex-col justify-center p-4 rounded-xl">
+	<div id='button-group' class = 'flex flex-row p-4 w-1/3 justify-around'>
 		<Button on:click={saveDivAsImage}><FileExportOutline/></Button>
+		<Button class='my-1' on:click={()=>labelTitle()}>Autolabel</Button>
 		<Toggle bind:checked={showControlButtons}>Show Control Buttons</Toggle>
 	</div>
 	<div id='capture' bind:this={divToCapture} class='w-max mx-auto'>
