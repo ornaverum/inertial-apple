@@ -307,13 +307,13 @@
 				>
 				<TrashBinOutline size='xs' class="text-white-500"/>
 			</Button>
-			<div class='flex flex-col mr-2'>
+			<!-- <div class='flex flex-col mr-2'>
 				<Label for="select-y-label" class="">Select y-label</Label>
 				<Select id='select-y-label' class="" size="sm" items={yLabelOptions} bind:value={labels.y} />
-			</div>
+			</div> -->
 
 
-			<Button size='xs'>Select Axis <ChevronDownOutline/></Button>
+			<!-- <Button size='xs'>Select Axis <ChevronDownOutline/></Button>
 			<Dropdown inline>
 				{#each axisSets as axis (axis)}
 					<DropdownItem
@@ -326,7 +326,7 @@
 						</svg>
 					</DropdownItem>
 				{/each}	
-			</Dropdown>
+			</Dropdown> -->
 		</div>
 	{/if}
 	<EditLabel text={title} size='xs' {showControlButtons}/>
