@@ -130,7 +130,7 @@
 		<Toggle bind:checked={showControlButtons}>Show Control Buttons</Toggle>
 	</div>
 
-	<div id="capture" bind:this={divToCapture} class='w-max mx-auto'>
+	<div id="capture" bind:this={divToCapture} class='w-fit mx-auto'>
 
 			<!-- <EditLabel text='Graph Group' size='xl2' {showControlButtons}/> -->
 			<div class="flex flex-col flex-wrap">
@@ -140,7 +140,7 @@
 
 						<div class='flex flex-col m-1'>
 							<Button class='my-1' on:click={()=>{groupIDs = groupIDs.filter(g => g !== group)}}><TrashBinOutline/></Button>
-							<Button class='my-1' on:click={()=>labelGroupTitle(group)}>Label A-...</Button>
+							<Button class='my-1' on:click={()=>labelGroupTitle(group)}>Autotitle</Button>
 							<div class='flex flex-col mr-2'>
 								<Label for="select-y-label" class="">Select y-label for group</Label>
 								<Select on:change={()=>labelGroupYAxis(group, ylabel)} id='select-y-label' class="" size="sm" items={yLabelOptions} bind:value={ylabel} />
