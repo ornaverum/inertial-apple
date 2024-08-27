@@ -26,6 +26,7 @@
 	  <NavLi href="{base}/graph-maker">Graph Maker</NavLi>
 	  <NavLi href="{base}/grapher">Grapher</NavLi>
 	  <NavLi href="{base}/vid-analysis">Video Analysis</NavLi>
+	  <NavLi href="{base}/equation-editor">Equation Editor</NavLi>
 	</NavUl>
   </Navbar>
 

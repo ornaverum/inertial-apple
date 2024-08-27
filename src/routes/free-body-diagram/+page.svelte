@@ -180,6 +180,8 @@
 	let divToCapture: HTMLDivElement;
 
 	const saveDivAsImage = async () => {
+		let tempCtrl = showControlButtons;
+		await setControlButtons(false);
 		const canvas = await html2canvas(divToCapture);
 		const dataUrl = canvas.toDataURL('image/png');
 		const link = document.createElement('a');
@@ -188,8 +190,13 @@
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
-
+		await setControlButtons(tempCtrl);
 	};
+
+	async function setControlButtons(ctrl:boolean){
+		showControlButtons = ctrl;
+	} 
+
 
 	// addNewForce({x:1, y:1});
 	// Add initial arrow for testing
@@ -216,15 +223,15 @@
 
 <main class="flex flex-col bg-gray-50 justify-center">
 	<div id='button-group' class = 'flex flex-row p-4'>
-		<Button on:click={deleteAll} class="mx-2"><RefreshOutline/></Button>
 		<Button on:click={saveDivAsImage} class="mx-2"><FileExportOutline/></Button>
+		<Button on:click={deleteAll} class="mx-2"><RefreshOutline/></Button>
 		<Toggle class="mx-2" bind:checked={showNetForce}
 			>Show Net Force</Toggle>
 	</div >
 	<div id='capture'  bind:this={divToCapture} class='mx-auto w-max'>
-		<div id='fbd-label' class='w-3/4 mx-auto text-2xl font-bold flex flex-col rounded-xl border-1'>
+		<div id='fbd-label' class='w-3/4 mx-auto text-2xl font-bold flex flex-col rounded-xl border-1 my-4'>
 			<EditLabel text='FBD Title' size='xl2' {showControlButtons}/>
-			<Hr classHr="h-1 mx-auto my-7 rounded md:my-10"> </Hr>
+			 <!-- <div contenteditable="true">{FBDLabel}</div> -->
 		</div>
 		
 		<div class='flex flex-row flex-wrap'>
@@ -279,7 +286,7 @@
 		
 				</Stage>
 			</div>
-			<div id="tao-chart" class='max-w-lg top-0 p-4 flex-auto'>
+			<div id="tao-chart" class='max-w-lg px-4 top-0 flex-auto'>
 				<div id='fbd-label' class='mx-auto text-lg font-bold flex flex-row rounded-xl border-1'>
 					<p>TAO Chart</p>
 				</div>
@@ -329,6 +336,7 @@
 								<div class='mx-auto' on:dblclick={()=>{force.editText = true}}>{force.type}</div>
 								<div class='mx-auto' on:dblclick={()=>{force.editText = true}}>{force.agent}</div>
 								<div class='mx-auto' on:dblclick={()=>{force.editText = true}}>{force.object}</div>
+								
 							{/if}
 							<Button color="red" class="mb-0 p-0 w-0"
 								on:click={() => removeForce(force.id)}

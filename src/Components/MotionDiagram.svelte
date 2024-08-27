@@ -21,7 +21,7 @@
 	export let width:number = 800;
     export let height:number = 100;
     export let label:string = 'x';
-	export let title:string = 'MD';
+	export let title:string = 'Title';
 
 	export let gridNum:number = 30; // Number of grid intervals
 	export let showControlButtons: boolean = true;
@@ -80,6 +80,7 @@
 		{:else}
 			{title}
 		{/if}
+		<!-- <div contenteditable="true">{title}</div> -->
 	</div>
 	<div class="flex flex-row">
 		{#if (showControlButtons)}
@@ -90,6 +91,8 @@
 					posList = [];
 					velList = [];
 					accList = [];
+					yValue = cellSize;
+					params.yValue = yValue;
 				}}><RefreshOutline/></Button>
 				<div class='flex flex-row text-sm'>
 					Position

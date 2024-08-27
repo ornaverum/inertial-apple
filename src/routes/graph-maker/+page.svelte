@@ -19,11 +19,24 @@
 
 	let idIncrement = 0;
 
-	const prepSaveDivAsImage = ()=>
-	{
-		showControlButtons = false;
-		saveDivAsImage();
-	}
+	const saveDivAsImage = async () => {
+		let tempCtrl = showControlButtons;
+		await setControlButtons(false);
+		const canvas = await html2canvas(divToCapture);
+		const dataUrl = canvas.toDataURL('image/png');
+		const link = document.createElement('a');
+		link.href = dataUrl;
+		link.download = 'div-image.png';
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		await setControlButtons(tempCtrl);
+	};
+
+	async function setControlButtons(ctrl:boolean){
+		showControlButtons = ctrl;
+	} 
+
 	let groupIDIncrement = 0;
 	let graphIDIncrement = 0;
 
@@ -44,20 +57,9 @@
 	let groupIDs: number[] = [0];
 
 	const addNewGraph = (groupID: number) =>{
-		let newGraph:Graph = {title: 'List', graphID:(++graphIDIncrement), groupID: groupID, pathList:[], labels: {x:'Time', y:'Position'}};
+		let newGraph:Graph = {title: 'Title', graphID:(++graphIDIncrement), groupID: groupID, pathList:[], labels: {x:'Time', y:'Position'}};
 		graphs = [...graphs, newGraph];
 	}
-
-	const saveDivAsImage = async () => {
-		const canvas = await html2canvas(divToCapture);
-		const dataUrl = canvas.toDataURL('image/png');
-		const link = document.createElement('a');
-		link.href = dataUrl;
-		link.download = 'div-image.png';
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	};
 
 	const handleDelete = (e:CustomEvent) => {
 		graphs = graphs.filter(graph => graph.graphID !== e.detail.id);
@@ -125,8 +127,8 @@
 
 <main class="flex flex-col justify-center" >
 	<div id='button-group' class = 'flex flex-row p-4'>
+		<Button on:click={saveDivAsImage} class='mx-1'><FileExportOutline/></Button>
 		<Button on:click={resetAll} class='mx-1'><RefreshOutline/></Button>
-		<Button on:click={prepSaveDivAsImage} class='mx-1'><FileExportOutline/></Button>
 		<Toggle bind:checked={showControlButtons}>Show Control Buttons</Toggle>
 	</div>
 

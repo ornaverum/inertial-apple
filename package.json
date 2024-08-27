@@ -29,7 +29,9 @@
 		"flowbite-svelte": "^0.46.15",
 		"flowbite-svelte-icons": "^1.6.1",
 		"html2canvas": "^1.4.1",
+		"katex": "^0.16.11",
 		"konva": "^9.3.14",
+		"svelte-katex": "^0.1.2",
 		"svelte-konva": "^0.3.1"
 	}
 }

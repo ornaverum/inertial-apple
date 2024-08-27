@@ -21,7 +21,7 @@
 		id: id_ind,
 		width: width,
 		height: height,
-		title: 'MD',
+		title: 'Title',
 		gridNum: 30,
 		marginY: 5,
 		posList: [],
@@ -38,6 +38,8 @@
 	let divToCapture: HTMLDivElement;
 
 	const saveDivAsImage = async () => {
+		let tempCtrl = showControlButtons;
+		await setControlButtons(false);
 		const canvas = await html2canvas(divToCapture);
 		const dataUrl = canvas.toDataURL('image/png');
 		const link = document.createElement('a');
@@ -46,7 +48,12 @@
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
+		await setControlButtons(tempCtrl);
 	};
+
+	async function setControlButtons(ctrl:boolean){
+		showControlButtons = ctrl;
+	} 
 
 	const handleDelete = (e:CustomEvent) => {
 		mdArray = mdArray.filter(md => md.id !== e.detail.id);
@@ -73,7 +80,7 @@
 		<ul class='list-none'>
 			{#each mdArray as md}
 				<li>
-					<MotionDiagram on:deleteMe={handleDelete} {...md} bind:posList={md.posList} bind:accList={md.accList} {showControlButtons}/>
+					<MotionDiagram on:deleteMe={handleDelete} {...md} bind:posList={md.posList} bind:accList={md.accList} bind:title={md.title} {showControlButtons}/>
 				</li>
 			{/each}
 		</ul>
