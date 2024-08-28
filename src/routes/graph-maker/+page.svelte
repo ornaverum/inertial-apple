@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Stage, Layer, Line, Circle, Path} from 'svelte-konva';
+	import {page} from '$app/stores';
   	import DragArrow from '../../Components/QualGraph.svelte';
 	import EditLabel from '../../Components/EditLabel.svelte';
 	import type {GraphPath, Point} from '../../Components/kinematicsTypes';
@@ -11,6 +12,10 @@
 	import QualGraph from '../../Components/QualGraph.svelte';
 
 	import html2canvas from 'html2canvas';
+
+
+	const url = $page.url;
+	console.log(url);
 
 	let name: string = 'graph-maker';
 
@@ -120,8 +125,26 @@
 	];
 
 	let ylabel:string = 'Position';
+	
+	// if (url.searchParams.has('preset')) {
+	// 	let preset = url.searchParams.get('preset');
+	// 	if(preset === 'kinematics'){
+	// 		graphs = [
+	// 			{title: 'x', graphID: 0, groupID: 0, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
+	// 			{title: 'v', graphID: 1, groupID: 0, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
+	// 			{title: 'a', graphID: 2, groupID: 0, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
+	// 		];
+	// 	}
+	// }
 
-	addNewGraph(0);
+	graphs = [
+				{title: '', graphID: 0, groupID: 0, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
+				{title: '', graphID: 1, groupID: 0, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
+				{title: '', graphID: 2, groupID: 0, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
+			];
+
+	showControlButtons = false;
+	// addNewGraph(0);
 
 </script>
 
