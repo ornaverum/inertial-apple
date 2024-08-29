@@ -32,6 +32,7 @@
 		"katex": "^0.16.11",
 		"konva": "^9.3.14",
 		"svelte-katex": "^0.1.2",
-		"svelte-konva": "^0.3.1"
+		"svelte-konva": "^0.3.1",
+		"mathquill": "^0.10.1-a"
 	}
 }
