@@ -3,52 +3,81 @@
 	import { Video, Fileupload, Label } from 'flowbite-svelte'
 	import { Stage, Layer, Line, Circle, Arrow, Image} from 'svelte-konva';
 	import {onMount} from 'svelte';
+	import Konva from 'konva';
 	let videoFile:string = '/assets/RunningShort.mp4';
 	let canvas;
-	let height:number = 640;
-	let width:number = 480;
-	let image = null;
-	let video = null;
+	let height:number = 480;
+	let width:number = 840;
+	let image:Element;
+	let video:Element;
 
     onMount(() => {
-        const img = document.createElement("img");
-        img.src = "https://konvajs.org/assets/yoda.jpg";
-        img.onload = () => {
-            image = img;
-        };
-		const vid = document.createElement("vid");
-		vid.src =  '/assets/RunningShort.mp4';
-		vid.onload = () => {
-			video = vid;
-		};
+    
+ 	    var stage = new Konva.Stage({
+        container: 'container',
+        width: width,
+        height: height,
+      });
+
+      var layer = new Konva.Layer();
+      stage.add(layer);
+
+      var video = document.createElement('video');
+      video.src = videoFile;
+        // 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
+
+      var image = new Konva.Image({
+        image: video,
+        draggable: true,
+        x: 0,
+        y: 0,
+		width: width,
+		height: height,
+      });
+      layer.add(image);
+
+    //   var text = new Konva.Text({
+    //     text: 'Loading video...',
+    //     width: stage.width(),
+    //     height: stage.height(),
+    //     align: 'center',
+    //     verticalAlign: 'middle',
+    //   });
+    //   layer.add(text);
+
+      var anim = new Konva.Animation(function () {
+        // do nothing, animation just need to update the layer
+      }, layer);
+
+      // update Konva.Image size when meta is loaded
+      video.addEventListener('loadedmetadata', function (e) {
+        // text.text('Press PLAY...');
+        image.width(width);
+        image.height(height);
+      });
+
+      document.getElementById('play').addEventListener('click', function () {
+        // text.destroy();
+        video.play();
+        anim.start();
+      });
+      document.getElementById('pause').addEventListener('click', function () {
+        video.pause();
+        anim.stop();
+      });
     });
+
+
+
+
+	
 </script>
 
 <main class='flex flex-col items-center h-3/4'>
 
-
+	<button id="play">Play</button><button id="pause">Pause</button>
 	<div id="container" class="w-8/12 bg-gray-500 mx-auto my-4 relative">
-		<Stage config={{width, height, id:'main_stage'}}>
-			<Layer>
-				<video
-					id="videoInput"
-					width="640"
-					height="480"
-					controls
-					muted
-					src={videoFile}
-					class='mx-auto absolute top-0 left-0'
-				></video>
 
-			</Layer>
-			<Layer>
-				<Line config = {{
-					points:[0, 0, width, height],
-					stroke:"red",
-					strokeWidth:10
-					}}/>
-			</Layer>
-		</Stage>
 	</div>
 
 	<div>
