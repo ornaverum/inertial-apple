@@ -1,0 +1,56 @@
+<script lang="ts">
+    import {Layer} from 'svelte-konva';
+    import {onMount} from 'svelte';
+    import {Button} from 'flowbite-svelte';
+    import {PlayOutline, PauseOutline} from 'flowbite-svelte-icons';
+    import Konva from 'konva';
+    
+    export let layerConfig;
+    export let videoURL;
+    let layer: Konva.Layer;
+    let video: HTMLVideoElement;
+    let image: Konva.Image;
+    let anim: Konva.Animation;
+
+    onMount(() => {       
+        const img = document.createElement("img");
+        img.src = "https://konvajs.org/assets/yoda.jpg";
+        img.onload = () => {
+            image = img;
+        };
+
+        video = document.createElement('video');
+        video.src = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
+        video.loop = true;
+
+        image = new Konva.Image({
+            image: video,
+            draggable: true,
+            x: 0,
+            y: 0,
+        });
+
+        // Add the image to the layer after the layer is initialized
+        if (layer) {
+            layer.add(image);
+            layer.draw();
+        }
+    });
+
+    anim = new Konva.Animation(function () {
+        // The animation is just here to keep the layer updating
+        layer.batchDraw();
+    }, layer);
+
+    anim.start();
+</script>
+
+<Button on:click={() => video.play()}>
+    <PlayOutline />
+</Button>
+<Button on:click={() => video.pause()}>
+    <PauseOutline />
+</Button>
+
+<Layer bind:this={layer}>
+</Layer>

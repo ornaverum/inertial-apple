@@ -1,75 +1,23 @@
 <script lang="ts">
 	import Canvas from '../../Components/Canvas.svelte';
-	import { Video, Fileupload, Label } from 'flowbite-svelte'
+	import { Fileupload, Label } from 'flowbite-svelte'
 	import { Stage, Layer, Line, Circle, Arrow, Image} from 'svelte-konva';
-	import {onMount} from 'svelte';
+	import {onMount, tick} from 'svelte';
 	import Konva from 'konva';
+
+	import Video from './Components/Video.svelte';
+
 	let videoFile:string = '/assets/RunningShort.mp4';
 	let canvas;
 	let height:number = 480;
 	let width:number = 840;
 	let image:Element;
 	let video:Element;
+	let stage:Stage;
+	let line;
+	let vidLayer:Layer;
 
-    onMount(() => {
     
- 	    var stage = new Konva.Stage({
-        container: 'container',
-        width: width,
-        height: height,
-      });
-
-      var layer = new Konva.Layer();
-      stage.add(layer);
-
-      var video = document.createElement('video');
-      video.src = videoFile;
-        // 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
-
-      var image = new Konva.Image({
-        image: video,
-        draggable: true,
-        x: 0,
-        y: 0,
-		width: width,
-		height: height,
-      });
-      layer.add(image);
-
-    //   var text = new Konva.Text({
-    //     text: 'Loading video...',
-    //     width: stage.width(),
-    //     height: stage.height(),
-    //     align: 'center',
-    //     verticalAlign: 'middle',
-    //   });
-    //   layer.add(text);
-
-      var anim = new Konva.Animation(function () {
-        // do nothing, animation just need to update the layer
-      }, layer);
-
-      // update Konva.Image size when meta is loaded
-      video.addEventListener('loadedmetadata', function (e) {
-        // text.text('Press PLAY...');
-        image.width(width);
-        image.height(height);
-      });
-
-      document.getElementById('play').addEventListener('click', function () {
-        // text.destroy();
-        video.play();
-        anim.start();
-      });
-      document.getElementById('pause').addEventListener('click', function () {
-        video.pause();
-        anim.stop();
-      });
-    });
-
-
-
-
 	
 </script>
 
@@ -77,7 +25,9 @@
 
 	<button id="play">Play</button><button id="pause">Pause</button>
 	<div id="container" class="w-8/12 bg-gray-500 mx-auto my-4 relative">
-
+		<Stage config={{width, height}}>
+			<Video layerConfig={{width, height}} videoURL={videoFile} />
+		</Stage>
 	</div>
 
 	<div>

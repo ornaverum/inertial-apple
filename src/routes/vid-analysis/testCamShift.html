@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Video Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- <link rel="stylesheet" href="./css/testSlider2.css"> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsfeat@0.0.8/build/jsfeat.min.js"></script>
+    <script type="text/javascript" src="js/compatibility.js"></script>
+    <script type="text/javascript" src="js/profiler.js"></script>
+    <script type="text/javascript" src="js/dat.gui.min.js"></script>
+    <script async src="https://docs.opencv.org/master/opencv.js" onload="initializeOpenCV()"></script>
+    <script src="js/utils.js"></script>
+    
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  </head>
+  <body>
+    <div style="display: flex; flex-flow: column">
+      <div>
+        <input type="file" id = "videoFileInput" accept="video/">
+      </div>
+      <div id="video-container" style="display: inline-flex">
+        <video
+          id="videoInput"
+          width="640"
+          height="480"
+          controls
+          muted
+          src="../assets/SoccerShort.mp4"
+          style="display:block"
+        ></video>
+        <canvas
+          style="background-color: aqua; display:block"
+          id="canvasOutput"
+          width="640"
+          height="480"
+        ></canvas>
+        <canvas
+          style="background-color: pink; display:block"
+          id="canvasAux"
+          width="640"
+          height="480"
+        ></canvas>
+        <canvas
+          style="background-color: lime; display:block"
+          id="canvasROI"
+          width="640"
+          height="480"
+        ></canvas>
+
+      </div>
+
+        <div id="panel-container" >
+          <div id="control-container" style="display:flex; flex-direction: column;">
+            <span>Controls</span>
+            <div id="vid-controls-container" style="display: flex; flex-flow: row;">
+              <button class="btn vid-btn" id="btnFastBackward"><i class="fa fa-fast-backward"></i></button>
+              <button class="btn vid-btn" id="btnBackward"><i class="fa fa-backward"></i></button>
+              <button class="btn vid-btn" id = "btnPlayPause"><i id = "idPlayPause" class="fa fa-play"></i></i></button>
+              <button class="btn vid-btn" id="btnForward"><i class="fa fa-forward"></i></button>
+              <button class="btn vid-btn" id="btnFastForward"><i class="fa fa-fast-forward"></i></button>
+
+            </div>
+            <div id="draw-more-controls-container" style="display: flex; flex-flow: row;">
+              <button class="ctrl-btn btn" id="btnTempSelect" title="Select Template"><i class="fa fa-dashcube"></i></button>
+              <button class="ctrl-btn btn" id="btnROISelect" title="Select Region of Interest"><i class="fa fa-square"></i></button>
+            </div>
+          </div>
+          <div id="template-container">
+            <canvas id="canvasTemplate" width="0" height="0" style="background-color: cyan;"></canvas>
+          </div>
+        </div>
+    </div>
+
+<!-- 
+    <script type="text/javascript" src="js/featscripts.js"></script>
+    <script type="text/javascript" src="js/imgscripts.js"></script>
+    <script type="text/javascript" src="js/opencvscripts.js"></script> -->
+    <script>
+var video = document.getElementById('videoInput');
+      var trackWindow = null;
+      var frame = null;
+      var targetCoords = {x:0, y:0, w:0, h:0};
+      var roiCoords = {x:0, y:0, w:0, h:0};
+      var coords = {x:0, y:0, w:0, h:0};
+
+      // Add an event listener to the file input
+videoFileInput.addEventListener("change", function (event) {
+  const selectedFile = event.target.files[0]; // Get the selected file
+
+  if (selectedFile) {
+    // Create a URL for the selected file
+    const videoURL = URL.createObjectURL(selectedFile);
+
+    // Set the video element's source to the selected file
+    video.src = videoURL;
+
+    video.style.display = "block";
+  }
+});
+      
+      var isVidReady = false;
+      var isCVReady = false;
+      var selectingROI = false;
+      var selectingTemp = false;
+      var dragging = false;
+                  
+          function waitForLoad() {
+            if (isVidReady && isCVReady) {
+              main();
+            } else {
+              return;
+            }
+          }
+
+          function initializeOpenCV() {
+            if (typeof cv === "undefined") {
+              setTimeout(initializeOpenCV, 50);
+              return;
+            }
+            cv.onRuntimeInitialized = function (event) {
+              isCVReady = true;
+              console.log("OpenCV.js initialized");
+              waitForLoad();
+            };
+          }
+
+          video.onloadeddata = function (event) {
+            isVidReady = true;
+            console.log("Video Loaded");
+            waitForLoad();
+          };
+
+          $("#canvasOutput").mousedown(function(e){
+                console.log('mousedown');
+                dragging = true;
+                let x = e.pageX - this.offsetLeft;
+                let y = e.pageY - this.offsetTop;
+                console.log(x, y);
+                x0 = x;
+                y0 = y;
+                w = 2;
+                h = 2;
+                // trackWindow = new cv.Rect(x, y, 0, 0);
+            });
+            $("#canvasOutput").mousemove(function(e){
+                if (dragging === false) return;
+                console.log('mousemove');
+                let x = e.pageX - this.offsetLeft;
+                let y = e.pageY - this.offsetTop;
+                console.log(x, y);
+                // absolute value of the difference between the current and the original point
+                w = Math.abs(x - x0) || 1;
+                h = Math.abs(y - y0) || 1;
+                coords = {x: x0, y: y0, w: w, h: h};
+            });
+            $("#canvasOutput").mouseup(function(e){
+                console.log('mouseup');
+                dragging = false;
+                let x = e.pageX - this.offsetLeft;
+                let y = e.pageY - this.offsetTop;
+                console.log(x, y);
+                w = Math.abs(x - x0) || 1;
+                h = Math.abs(y - y0) || 1;
+                coords = {x: x0, y: y0, w: w, h: h};
+            });
+
+
+        printError = function (err) {
+            if (typeof err === 'undefined') {
+                err = '';
+            } else if (typeof err === 'number') {
+                if (!isNaN(err)) {
+                    if (typeof cv !== 'undefined') {
+                        err = 'Exception: ' + cv.exceptionFromPtr(err).msg;
+                    }
+                }
+            } else if (typeof err === 'string') {
+                let ptr = Number(err.split(' ')[0]);
+                if (!isNaN(ptr)) {
+                    if (typeof cv !== 'undefined') {
+                        err = 'Exception: ' + cv.exceptionFromPtr(ptr).msg;
+                    }
+                }
+            }
+            console.log(err);
+        }
+
+
+        
+
+        function main(){
+            console.log('main function');
+            // video.play();
+            video.currentTime = 0;
+            
+            let cap = new cv.VideoCapture(video);
+
+            // take first frame of the video
+            let frame = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+            cap.read(frame);
+            cv.imshow('canvasOutput', frame);
+        }
+
+        function tracc(){
+            // hardcode the initial location of window
+            // let trackWindow = new cv.Rect(150, 320, 30, 30);
+
+            // set up the ROI for tracking
+            let roi = frame.roi(trackWindow);
+            let hsvRoi = new cv.Mat();
+            cv.cvtColor(roi, hsvRoi, cv.COLOR_RGBA2RGB);
+            cv.cvtColor(hsvRoi, hsvRoi, cv.COLOR_RGB2HSV);
+            let mask = new cv.Mat();
+            let lowScalar = new cv.Scalar(30, 30, 0);
+            let highScalar = new cv.Scalar(180, 180, 180);
+            let low = new cv.Mat(hsvRoi.rows, hsvRoi.cols, hsvRoi.type(), lowScalar);
+            let high = new cv.Mat(hsvRoi.rows, hsvRoi.cols, hsvRoi.type(), highScalar);
+            cv.inRange(hsvRoi, low, high, mask);
+            let roiHist = new cv.Mat();
+            let hsvRoiVec = new cv.MatVector();
+            hsvRoiVec.push_back(hsvRoi);
+            cv.calcHist(hsvRoiVec, [0], mask, roiHist, [180], [0, 180]);
+            cv.normalize(roiHist, roiHist, 0, 255, cv.NORM_MINMAX);
+
+            // delete useless mats.
+            roi.delete(); hsvRoi.delete(); mask.delete(); low.delete(); high.delete(); hsvRoiVec.delete();
+
+            // Setup the termination criteria, either 10 iteration or move by at least 1 pt
+            let termCrit = new cv.TermCriteria(cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1);
+
+            let hsv = new cv.Mat(video.height, video.width, cv.CV_8UC3);
+            let hsvVec = new cv.MatVector();
+            hsvVec.push_back(hsv);
+            let dst = new cv.Mat();
+            let trackBox = null;
+
+            const FPS = 30;
+            function processVideo() {
+                console.log('processing video');
+                try {
+                    if (false) {
+                        // clean and stop.
+                        frame.delete(); dst.delete(); hsvVec.delete(); roiHist.delete(); hsv.delete();
+                        return;
+                    }
+                    let begin = Date.now();
+
+                    // start processing.
+                    cap.read(frame);
+                    cv.cvtColor(frame, hsv, cv.COLOR_RGBA2RGB);
+                    cv.cvtColor(hsv, hsv, cv.COLOR_RGB2HSV);
+                    cv.calcBackProject(hsvVec, [0], roiHist, dst, [0, 180], 1);
+
+                    // apply camshift to get the new location
+                    [trackBox, trackWindow] = cv.CamShift(dst, trackWindow, termCrit);
+
+                    // Draw it on image
+                    let pts = cv.rotatedRectPoints(trackBox);
+                    cv.line(frame, pts[0], pts[1], [255, 0, 0, 255], 3);
+                    cv.line(frame, pts[1], pts[2], [255, 0, 0, 255], 3);
+                    cv.line(frame, pts[2], pts[3], [255, 0, 0, 255], 3);
+                    cv.line(frame, pts[3], pts[0], [255, 0, 0, 255], 3);
+                    cv.imshow('canvasOutput', frame);
+
+                    // schedule the next one.
+                    let delay = 1000/FPS - (Date.now() - begin);
+                    setTimeout(processVideo, delay);
+                } catch (err) {
+                    printError(err);
+                }
+            };
+
+            // schedule the first one.
+            setTimeout(processVideo, 0);
+
+        }
+      // waitForVideoLoad(waitforCVReady(main));
+        
+      $("#btnROISelect").click(function(){
+        console.log('selecting ROI');
+        selectingTemp = false;
+        selectingROI = true;
+      });
+
+      $("#btnTempSelect").click(function(){
+        console.log('selecting Template');
+        selectingTemp = true;
+        selectingROI = false;
+      });
+
+
+      $("#btnPlayPause").click(function(){
+        // if (video.paused) {
+        //   video.play();
+        //   $("#idPlayPause").removeClass("fa-play");
+        //   $("#idPlayPause").addClass("fa-pause");
+        //   main();
+        // } else {
+        //   video.pause();
+        //   $("#idPlayPause").removeClass("fa-pause");
+        //   $("#idPlayPause").addClass("fa-play");
+        // }
+        selectingTemp = false;
+        selectingROI = false;
+        main();
+      });
+
+    </script>
+
+
+    
+  </body>
+</html>
