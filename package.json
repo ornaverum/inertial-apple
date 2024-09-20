@@ -24,7 +24,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"canvas": "^2.11.2",
+		"canvas": "^3.0.0-rc2",
 		"flowbite": "^2.5.1",
 		"flowbite-svelte": "^0.46.15",
 		"flowbite-svelte-icons": "^1.6.1",

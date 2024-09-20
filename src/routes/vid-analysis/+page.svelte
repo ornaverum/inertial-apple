@@ -31,15 +31,27 @@
             image = img;
         };
 
-		anim = new Konva.Animation(function () {
-        // do nothing, animation just need to update the layer
-			layer.draw();
 
-		}, layer);
-
+		
 	  	video = document.createElement('video');
       	video.src =
         	'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
+		
+		const drawFrame = ()=>{
+			let canvas=layer.canvas;
+			let ctx = canvas.context;
+			ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+		}
+		drawFrame();
+
+		video.addEventListener("play", () => {
+			
+			function step() {
+				drawFrame();
+				requestAnimationFrame(step);
+			}
+			requestAnimationFrame(step);
+		});
 	});
 </script>
 
@@ -52,7 +64,7 @@
 	</Button>
 	<Stage config={{height: 500, width:500}} bind:handle={stage}>
 		<Layer bind:handle={layer}>
-			<Image config={{image:video, draggable:true, x:0, y:0}} />
+			<!-- <Image config={{image:image, draggable:true, x:50, y:100}} /> -->
 		</Layer>
 	</Stage>
 
