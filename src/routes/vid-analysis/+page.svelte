@@ -17,6 +17,9 @@
 	let height: number = 500;
 	let width: number = 500;
 
+	let innerWidth: number;
+	let innerHeight: number;
+
 	onMount(async () => {
 		console.log('Mounted');
 		await tick();
@@ -31,6 +34,15 @@
 		await loadVideo();
 		height = video.videoHeight || 500;
 		width = video.videoWidth || 500;
+
+		if (height > innerHeight || width > innerWidth) {
+			let ratio = Math.min(innerHeight / height, innerWidth / width);
+			height *= ratio;
+			width *= ratio;
+			let canvas=layer.canvas;
+			canvas.width = width;
+			canvas.height = height;
+		}
 
 		const drawFrame = ()=>{
 			let canvas=layer.canvas;
@@ -50,6 +62,8 @@
 	});
 </script>
 
+<svelte:window bind:innerWidth bind:innerHeight />
+
 <main class='flex flex-col items-center h-3/4'>
 	<Button on:click={() => {video.play(); }} bind:this={btn}>
 		<PlayOutline />
@@ -57,7 +71,7 @@
 	<Button on:click={() =>  {video.pause(); }} bind:this={btn}>
 		<PauseOutline />
 	</Button>
-	<Stage config={{height:600, width:800}} bind:handle={stage}>
+	<Stage config={{height, width}} bind:handle={stage}>
 		<Layer bind:handle={layer}>
 			<!-- <Image config={{image:image, draggable:true, x:50, y:100}} /> -->
 		</Layer>
