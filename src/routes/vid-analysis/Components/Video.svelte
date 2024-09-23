@@ -1,58 +1,72 @@
 <script lang="ts">
-    import {Layer} from 'svelte-konva';
-    import {onMount, tick} from 'svelte';
-    import {Button} from 'flowbite-svelte';
-    import {PlayOutline, PauseOutline} from 'flowbite-svelte-icons';
-    import Konva from 'konva';
-    
-    export let layerConfig;
-    export let videoURL;
-    let layer: Konva.Layer;
-    let video: HTMLVideoElement;
-    let image;
-    let anim: Konva.Animation;
-    let cnv: HTMLCanvasElement;
-    let ctx: CanvasRenderingContext2D;
+	import { Fileupload, Label, Button } from 'flowbite-svelte'
+	import { PauseOutline, PlayOutline, TrashBinOutline, RefreshOutline } from 'flowbite-svelte-icons';
+	import { Stage, Layer, Line, Circle, Arrow, Image} from 'svelte-konva';
+	import {onMount, tick} from 'svelte';
+	import Konva from 'konva';
 
-    onMount(async () => {       
-        const img = document.createElement("img");
-        img.src = "https://konvajs.org/assets/yoda.jpg";
-        img.onload = () => {
-            image = img;
-        };
+	let layer:Konva.Layer;
+	export let video:HTMLVideoElement;
+	let height: number = 500;
+	let width: number = 500;
 
-        video = document.createElement('video');
-        // video.src = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
-        video.src='/assets/Running.MOV';
-        video.loop = true;
+	let innerWidth: number;
+	let innerHeight: number;
 
-        image = new Konva.Image({
-            image: video,
-            draggable: true,
-            x: 0,
-            y: 0,
-        });
 
-        // Add the image to the layer after the layer is initialized
-        if (layer) {
-            console.log('Adding image to layer');
-            console.log(layer);
-            layer.add(image);
-            // layer.add(video);
-            layer.draw();
-            cnv = layer?.getCanvas()._canvas;
-            ctx = cnv?.getContext('2d');
+    onMount(async () => {
+		console.log('Mounted');
+		await tick();
+		
+	  	video = document.createElement('video');
+		video.src = 'assets/Running.MOV';
 
-        }
-    });
+		async function loadVideo() {
+			return new Promise((resolve) => {
+				if (video.readyState >= 1) {
+					// Metadata already loaded
+					resolve();
+				} else {
+					video.addEventListener('loadedmetadata', () => {
+					resolve();
+					});
+				}
+    		});
+		}
+		
+		await loadVideo();
+        console.log('Video loaded', video.videoHeight, video.videoWidth, innerHeight, innerWidth);
+		height = video.videoHeight || 500;
+		width = video.videoWidth || 500;
+
+		if (height > window.innerHeight || width > window.innerWidth) {
+			let ratio = Math.min(window.innerHeight / height, window.innerWidth / width);
+			height *= ratio;
+			width *= ratio;
+			let canvas=layer.canvas;
+			canvas.width = width;
+			canvas.height = height;
+            layer.getStage().width(width);
+            layer.getStage().height(height);
+		}
+
+		const drawFrame = ()=>{
+			let canvas=layer.canvas;
+			let ctx = canvas.context;
+			ctx.drawImage(video, 0, 0, width, height);
+		}
+		drawFrame();
+
+		video.addEventListener("play", () => {
+			function step() {
+				drawFrame();
+				requestAnimationFrame(step);
+			}
+			requestAnimationFrame(step);
+		});
+		video.muted = true;
+	});
 </script>
 
-<Stage>
-    
-    <Layer bind:handle={layer} on:click={()=>{
-        console.log('Layer clicked');
-        console.log(layer);
-    }}
-    >
-    </Layer>
-</Stage>
+
+<Layer bind:handle={layer} />

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Canvas from '../../Components/Canvas.svelte';
 	import { Fileupload, Label, Button } from 'flowbite-svelte'
-	import { PauseOutline, PlayOutline, TrashBinOutline } from 'flowbite-svelte-icons';
+	import { PauseOutline, PlayOutline, TrashBinOutline, RefreshOutline } from 'flowbite-svelte-icons';
 	import { Stage, Layer, Line, Circle, Arrow, Image} from 'svelte-konva';
 	import {onMount, tick} from 'svelte';
 	import Konva from 'konva';
@@ -11,70 +11,31 @@
 
 	let btn:Button;
 	let stage:Konva.Stage;
-	let layer:Konva.Layer;
 	let video:HTMLVideoElement;
-	let anim:Konva.Animation;
 	let height: number = 500;
 	let width: number = 500;
 
 	let innerWidth: number;
 	let innerHeight: number;
 
-	onMount(async () => {
-		console.log('Mounted');
-		await tick();
-		
-	  	video = document.createElement('video');
-		video.src = 'assets/Running.MOV';
-
-		async function loadVideo() {
-			await video.play();
-			video.pause();
-		}
-		await loadVideo();
-		height = video.videoHeight || 500;
-		width = video.videoWidth || 500;
-
-		if (height > innerHeight || width > innerWidth) {
-			let ratio = Math.min(innerHeight / height, innerWidth / width);
-			height *= ratio;
-			width *= ratio;
-			let canvas=layer.canvas;
-			canvas.width = width;
-			canvas.height = height;
-		}
-
-		const drawFrame = ()=>{
-			let canvas=layer.canvas;
-			let ctx = canvas.context;
-			ctx.drawImage(video, 0, 0, width, height);
-		}
-		drawFrame();
-
-		video.addEventListener("play", () => {
-			function step() {
-				drawFrame();
-				requestAnimationFrame(step);
-			}
-			requestAnimationFrame(step);
-		});
-		video.muted = true;
-	});
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <main class='flex flex-col items-center h-3/4'>
+	<div id='button-container' class='flex-row'>
+	<Button on:click={() => {video.currentTime = 0; video.pause();}} bind:this={btn}>
+		<RefreshOutline />
+	</Button>
 	<Button on:click={() => {video.play(); }} bind:this={btn}>
 		<PlayOutline />
 	</Button>
-	<Button on:click={() =>  {video.pause(); }} bind:this={btn}>
-		<PauseOutline />
-	</Button>
+		<Button on:click={() =>  {video.pause(); }} bind:this={btn}>
+			<PauseOutline />
+		</Button>
+	</div>
 	<Stage config={{height, width}} bind:handle={stage}>
-		<Layer bind:handle={layer}>
-			<!-- <Image config={{image:image, draggable:true, x:50, y:100}} /> -->
-		</Layer>
+		<Video bind:video={video} />
 	</Stage>
 
 </main>
