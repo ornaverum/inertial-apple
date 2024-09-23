@@ -11,6 +11,8 @@
     let video: HTMLVideoElement;
     let image;
     let anim: Konva.Animation;
+    let cnv: HTMLCanvasElement;
+    let ctx: CanvasRenderingContext2D;
 
     onMount(async () => {       
         const img = document.createElement("img");
@@ -20,7 +22,8 @@
         };
 
         video = document.createElement('video');
-        video.src = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
+        // video.src = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
+        video.src='/assets/Running.MOV';
         video.loop = true;
 
         image = new Konva.Image({
@@ -37,28 +40,19 @@
             layer.add(image);
             // layer.add(video);
             layer.draw();
+            cnv = layer?.getCanvas()._canvas;
+            ctx = cnv?.getContext('2d');
+
         }
     });
-
-    // anim = new Konva.Animation(function () {
-    //     // The animation is just here to keep the layer updating
-    //     // layer.batchDraw();
-    //     layer.draw();
-    // }, layer);
-
-    // anim.start();
 </script>
 
-<!-- <Button on:click={() => video.play()}>
-    <PlayOutline />
-</Button>
-<Button on:click={() => video.pause()}>
-    <PauseOutline />
-</Button> -->
-
-<Layer bind:handle={layer} on:click={()=>{
-    console.log('Layer clicked');
-    console.log(layer);
-}}
->
-</Layer>
+<Stage>
+    
+    <Layer bind:handle={layer} on:click={()=>{
+        console.log('Layer clicked');
+        console.log(layer);
+    }}
+    >
+    </Layer>
+</Stage>

@@ -15,7 +15,7 @@
 	let stage:Konva.Stage;
 	let layer:Konva.Layer;
 	let image;
-	let video;
+	let video:HTMLVideoElement;
 	let anim:Konva.Animation;
 
 	onMount(async () => {
@@ -34,9 +34,8 @@
 
 		
 	  	video = document.createElement('video');
-      	video.src =
-        	'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
-		
+
+		video.src = 'assets/Running.MOV';
 		const drawFrame = ()=>{
 			let canvas=layer.canvas;
 			let ctx = canvas.context;
@@ -52,6 +51,7 @@
 			}
 			requestAnimationFrame(step);
 		});
+		video.muted = true;
 	});
 </script>
 
