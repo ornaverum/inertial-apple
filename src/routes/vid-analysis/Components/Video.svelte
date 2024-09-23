@@ -19,6 +19,17 @@
             image = img;
         };
 
+        video = document.createElement('video');
+        video.src = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c4/Physicsworks.ogv/Physicsworks.ogv.240p.vp9.webm';
+        video.loop = true;
+
+        image = new Konva.Image({
+            image: video,
+            draggable: true,
+            x: 0,
+            y: 0,
+        });
+
         // Add the image to the layer after the layer is initialized
         if (layer) {
             console.log('Adding image to layer');
