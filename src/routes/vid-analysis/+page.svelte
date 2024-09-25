@@ -7,7 +7,6 @@
 	import Konva from 'konva';
 
 	import Video from './Components/Video.svelte';
-	import KonvaVidEx from './konvaVidEx.svelte';
 
 	let btn:Button;
 	let stage:Konva.Stage;

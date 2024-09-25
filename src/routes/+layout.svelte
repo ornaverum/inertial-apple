@@ -11,6 +11,10 @@
 
 <!-- <DarkMode btnClass={darkmodebtn} /> -->
  <!-- <DarkMode></DarkMode> -->
+<svelte:head>
+	<script async src="https://docs.opencv.org/4.x/opencv.js" type="text/javascript"></script>
+</svelte:head>
+
 
 <Navbar  >
 	<NavBrand href="/">

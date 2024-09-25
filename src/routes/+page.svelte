@@ -4,6 +4,10 @@
 
 </script>
 
+<svelte:head>
+	<script async src="https://docs.opencv.org/4.x/opencv.js" type="text/javascript"></script>
+</svelte:head>
+
 <div class='w-full h-full min-h-96'>
 	<Card class='bg-primary-100 mx-auto w-max'>
 		<h1 class="text-3xl dark:text-white w-max">Welcome to Inertial Apple</h1>
