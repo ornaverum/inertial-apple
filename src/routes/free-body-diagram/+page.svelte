@@ -6,6 +6,7 @@
     import { Button, Toggle, Label, Select, Input, Hr } from 'flowbite-svelte';
     import {TrashBinOutline, CirclePlusOutline, FileExportOutline, EditOutline, RefreshOutline} from 'flowbite-svelte-icons';
 	import EditLabel from '../../Components/EditLabel.svelte';
+	import Grid from '../../Components/Shared/Grid.svelte';
 
 	let name: string = 'Free Body Diagram';
 
@@ -247,15 +248,7 @@
 						addNewForce(comps);
 					}}
 				>
-					<Layer config={{id: 'grid_layer'}}>
-						{#each gridList as item (item.id)}
-							<Line config={{
-								points: [item.x0, item.y0, item.x1, item.y1],
-								stroke: 'gray',
-								strokeWidth: item.strokeWidth,
-								}} />
-						{/each}
-					</Layer>
+					<Grid {width} {height} gridNumX={10} gridNumY={10} label={''}></Grid>
 					<Layer config={{id:'arrow_layer'}}>
 						{#each forceList as force (force.id)}
 							<DragArrow
@@ -282,8 +275,6 @@
 							/>
 						{/if}
 					</Layer>
-		
-		
 				</Stage>
 			</div>
 			<div id="tao-chart" class='max-w-lg px-4 top-0 flex-auto'>

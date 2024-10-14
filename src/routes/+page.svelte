@@ -11,9 +11,12 @@
 			Physics tools for students and teachers. Still under development.
 		</p>
 	</Card>
-	<a href='https://svelte.dev/repl/434e0b14546747688401e8808c060a23?version=3.47.0'>Canvas as svelte component</a>
+	
 
 </div>
+<!-- <a href='https://svelte.dev/repl/434e0b14546747688401e8808c060a23?version=3.47.0'>Canvas as svelte component</a> -->
+
+
 
 <!-- <Button>Default</Button>
 <Button color="alternative">Alternative</Button>
