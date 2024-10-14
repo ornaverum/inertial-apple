@@ -248,7 +248,7 @@
 						addNewForce(comps);
 					}}
 				>
-					<Grid {width} {height} gridNumX={10} gridNumY={10} label={''}></Grid>
+					<Grid {width} {height} gridNum={{x:10, y:10}} label={''}></Grid>
 					<Layer config={{id:'arrow_layer'}}>
 						{#each forceList as force (force.id)}
 							<DragArrow

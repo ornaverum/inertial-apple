@@ -107,7 +107,7 @@
 					on:mouseleave={() => {onStage = false;}}
 					on:mouseenter={() => {onStage = true;}}
 					>
-					<Grid bind:this={gridComponent} {width} {height} {marginY} gridNumY={gridNum} gridNumX={1}/>
+					<Grid bind:this={gridComponent} {width} {height} gridNum={{y:0, x:gridNum}}/>
 					<Velocity bind:velList={velList} {posList}/>
 					<Acceleration active={toggleChecked && onStage} bind:accList={accList} {...params} {posList}/>
 					<Position active={!toggleChecked && onStage} bind:posList={posList} {...params}/>

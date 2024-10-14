@@ -3,29 +3,26 @@
     import { Stage, Layer, Line, Circle, Arrow, Text, Group, Rect} from 'svelte-konva';
 
     export let width:number = 800;
-    export let gridNumX:number = 30; // Number of grid intervals
-	export let gridNumY:number = 30; // Number of grid intervals
+	export let gridNum: {x:number, y:number} = {x: 30, y:30};
 	export let gridList: any[] = [];
     export let height:number = 100;
-    export let marginY:number = 5;
+    export let margin: {x:number, y:number} = {x: 5, y:5};
 	export let active:boolean = false;
 
 	export let label:string = 'x';
     let id_num: number = 0;
-	let gridSize = width;//Math.min(height, width);
-	let cellSizeX = gridSize/(gridNumX + 1);
-	let cellSizeY = gridSize/(gridNumY + 1);
-	let gridCenter = gridSize/2.0;
-	let yValue = cellSizeY;
+	let gridSize : {w:number, h:number} = {w: width, h:height};;//Math.min(height, width);
+	let cellSize : {x:number, y:number} = {x: gridSize.w/(gridNum.x + 1), y:gridSize.h/(gridNum.y + 1)};
+	let gridCenter: {x:number, y:number} = {x: gridSize.w/2, y:gridSize.h/2};
+	let yValue = cellSize.y;
 
+	for (let j = -gridNum.y/2; j <= gridNum.y/2; j++) {
+		let gridSpace = Math.max(gridNum.x,1)/2;
 
-
-
-	for (let j = -gridNumY/2; j <= gridNumY/2; j++) {
-		let startParallel = -gridNumX/2 * cellSizeX + gridCenter;
-		let endParallel = gridNumX/2 * cellSizeX + gridCenter;
-		let startPerp = j * cellSizeY + gridCenter;
-		let endPerp = j * cellSizeY + gridCenter;
+		let startParallel = -gridSpace * cellSize.x + gridCenter.x;
+		let endParallel = gridSpace * cellSize.x + gridCenter.x;
+		let startPerp = j * cellSize.y + gridCenter.y;
+		let endPerp = j * cellSize.y + gridCenter.y;
 		gridList.push({
 			id: id_num++,
 			x0: startParallel,
@@ -33,15 +30,16 @@
 			x1: endParallel,
 			y1: endPerp,
 			strokeWidth: j%5==0 ? 4 : 2,
-			strokeColor: 'gray',
+			strokeColor: 'grey',
 		});
 	}
 
-	for (let i = -gridNumX/2; i <= gridNumX/2; i++) {
-		let startParallel = -gridNumY/2 * cellSizeY + gridCenter;
-		let endParallel = gridNumY/2 * cellSizeY + gridCenter;
-		let startPerp = i * cellSizeX + gridCenter;
-		let endPerp = i * cellSizeX + gridCenter;
+	for (let i = -gridNum.x/2; i <= gridNum.x/2; i++) {
+		let gridSpace = Math.max(gridNum.y,1)/2;
+		let startParallel = -gridSpace * cellSize.y + gridCenter.y;
+		let endParallel = gridSpace * cellSize.y + gridCenter.y;
+		let startPerp = i * cellSize.x + gridCenter.x;
+		let endPerp = i * cellSize.x + gridCenter.x;
 		gridList.push({
 			id: id_num++,
 			x0: startPerp,
@@ -52,44 +50,25 @@
 			strokeColor: 'gray',
 		});
 	}
-	// for (let i = -gridNumX/2; i <= gridNumX/2; i++) {
-	// 	let startParallel = i * cellSizeX + gridCenter;
-	// 	let startPerp = -5 * cellSizeX + gridCenter;
-	// 	let endPerp = 5 * cellSizeX + gridCenter;
-	// 	gridList.push({
-	// 		id: id_num++,
-	// 		x0: startParallel,
-	// 		y0: startPerp,
-	// 		x1: startParallel,
-	// 		y1: endPerp,
-	// 		strokeWidth: i==0 ? 4 : 2,
-	// 	});
-	// 	gridList.push({
-	// 		id: id_num++,
-	// 		x0: startPerp,
-	// 		y0: startParallel,
-	// 		x1: endPerp,
-	// 		y1: startParallel,
-	// 		strokeWidth: i==0 ? 5 : 2,
-	// 	});
-	// }
 
+	let gridSpace = Math.max(gridNum.x,1)/2;
 	gridList.push({
 		id: id_num++,
-		x0: -gridNumY/2 * cellSizeY + gridCenter,
-		y0: gridCenter,
-		x1: gridNumY/2 * cellSizeY + gridCenter,
-		y1: gridCenter,
+		x0: -gridSpace * cellSize.x + gridCenter.x,
+		y0: gridCenter.y,
+		x1: gridSpace * cellSize.x + gridCenter.x,
+		y1: gridCenter.y,
 		strokeWidth:  5,
 		strokeColor: 'black',
 	});
 
+	gridSpace = Math.max(gridNum.y,1)/2;
 	gridList.push({
 		id: id_num++,
-		x0: gridCenter,
-		y0:  -gridNumX/2 * cellSizeX + gridCenter,
-		x1: gridCenter,
-		y1: gridNumX/2 * cellSizeX + gridCenter,
+		x0: gridCenter.x,
+		y0:  -gridSpace * cellSize.y + gridCenter.y,
+		x1: gridCenter.x,
+		y1: gridSpace * cellSize.y + gridCenter.y,
 		strokeWidth:  5,
 		strokeColor: 'black',
 	});
@@ -108,7 +87,7 @@
 		{/each}
 		<Text config={{
 			x: width-10,
-			y: 0.5*cellSizeY,
+			y: 0.5*cellSize.y,
 			text: label,
 			fontSize: 20,
 			fill: 'black',
