@@ -125,25 +125,53 @@
 	];
 
 	let ylabel:string = 'Position';
+	showControlButtons = true;
 	
-	// if (url.searchParams.has('preset')) {
-	// 	let preset = url.searchParams.get('preset');
-	// 	if(preset === 'kinematics'){
-	// 		graphs = [
-	// 			{title: 'x', graphID: 0, groupID: 0, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
-	// 			{title: 'v', graphID: 1, groupID: 0, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
-	// 			{title: 'a', graphID: 2, groupID: 0, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
-	// 		];
-	// 	}
-	// }
-
 	graphs = [
-				{title: '', graphID: 0, groupID: 0, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
-				{title: '', graphID: 1, groupID: 0, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
-				{title: '', graphID: 2, groupID: 0, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
+		{title: 'x', graphID: 0, groupID: 0, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
+				{title: 'v_x', graphID: 1, groupID: 0, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
+				{title: 'a_x', graphID: 2, groupID: 0, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
 			];
 
-	showControlButtons = false;
+	if (url.searchParams.has('preset')) {
+		let preset = url.searchParams.get('preset');
+		if(preset === 'kinematics'){
+			graphs = [
+				{title: 'x', graphID: 0, groupID: 0, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
+				{title: 'v_x', graphID: 1, groupID: 0, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
+				{title: 'a_x', graphID: 2, groupID: 0, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
+			];
+			showControlButtons = false;
+			console.log('Kinematics preset');
+		}
+		else if(preset === 'kinematics-v'){
+			graphs = [
+				{title: 'x', graphID: 0, groupID: 0, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
+				{title: 'v_x', graphID: 1, groupID: 1, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
+				{title: 'a_x', graphID: 2, groupID: 2, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
+			];
+			showControlButtons = false;
+			groupIDs = [0, 1,2];
+			console.log('vert Kinematics preset');
+		}
+		else if(preset === 'projectile'){
+			graphs = [
+				{title: 'x', graphID: 0, groupID: 0, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
+				{title: 'v_x', graphID: 1, groupID: 0, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
+				{title: 'a_x', graphID: 2, groupID: 0, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
+				{title: 'y', graphID: 3, groupID: 1, pathList: [{points: [], color: 'blue'}], labels: {x:'Time', y:'Position'}},
+				{title: 'v_y', graphID: 4, groupID: 1, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
+				{title: 'a_y', graphID: 5, groupID: 1, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
+				];
+
+			groupIDs = [0, 1];
+			showControlButtons = false;
+			console.log('Kinematics preset');
+		}
+	}
+
+	
+
 	// addNewGraph(0);
 
 </script>
