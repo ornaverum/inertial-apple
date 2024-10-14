@@ -98,7 +98,7 @@ function showMat(mat, context, imageData) {
   var data_u32 = new Uint32Array(id.buffer);
   var alpha = 0xff << 24;
   var pix = 0;
-  i = mat.cols * mat.rows;
+  let i = mat.cols * mat.rows;
   while (--i >= 0) {
     pix = id[i];
     data_u32[i] = alpha | (pix << 16) | (pix << 8) | pix;
