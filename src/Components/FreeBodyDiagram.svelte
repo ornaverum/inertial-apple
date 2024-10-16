@@ -1,12 +1,13 @@
 <script lang='ts'>
 
     import { Button, Toggle, Label, Select, Input, Hr } from 'flowbite-svelte';
-    import {TrashBinOutline, CirclePlusOutline, FileExportOutline, EditOutline, RefreshOutline} from 'flowbite-svelte-icons';
+    import {TrashBinOutline, CirclePlusOutline, FileExportOutline, EditOutline, RefreshOutline, FileImageOutline} from 'flowbite-svelte-icons';
 	import EditLabel from './EditLabel.svelte';
 	import Grid from './Shared/Grid.svelte';
+    import {onMount} from 'svelte';
 
 	import DragArrow from './DragArrow.svelte';
-    import { Stage, Layer, Line, Circle, Arrow, Text} from 'svelte-konva';
+    import { Stage, Layer, Image} from 'svelte-konva';
 
     import type { TaoItem, VectorArrow, Force, Pt } from './forceTypes';
 
@@ -134,6 +135,17 @@
 			flag = false;
 	}
 
+    let image:HTMLImageElement;
+    onMount(() => {
+        const img = document.createElement("img");
+        img.src = "/jumper.jpg";
+        img.onload = () => {
+            image = img;
+        };
+
+        console.log(img);
+    });
+
 </script>
 
 
@@ -144,17 +156,19 @@
 
 <div class='flex flex-row flex-wrap'>
     <div id='fbd' class='px-4 flex flex-col'>
-        <div id='fbd-label' class='ml-4 text-lg font-bold flex flex-row rounded-xl border-1'>
-            Free Body Diagram
+        <div id='fbd-label' class='w-full flex-row ml-4 text-lg font-bold flex flex-row rounded-xl border-1 space-around'>
+            <span>Free Body Diagram</span>
+            <Button><FileImageOutline/></Button>
         </div>
         <Stage config={{width, height, id:'main_stage'}}
-
             on:dblclick={(evt) => {
                 let comps = getCompsFromEvt(evt);
                 console.log(comps);
                 addNewForce(comps);
-            }}
-        >
+            }}>
+            <Layer>
+                <Image config={{ image, draggable:true }} />
+            </Layer>
             <Grid {width} {height} gridNum={{x:10, y:10}} label={''}></Grid>
             <Layer config={{id:'arrow_layer'}}>
                 {#each forceList as force (force.id)}

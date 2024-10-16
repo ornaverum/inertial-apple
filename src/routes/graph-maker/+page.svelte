@@ -74,7 +74,6 @@
 		graphs = [];
 		groupIDs = [0];
 		graphIDIncrement = 0;
-		groupIDIncrement = 0;
 		addNewGraph(0);
 	}
 
@@ -132,6 +131,7 @@
 				{title: 'v_x', graphID: 1, groupID: 0, pathList: [{points: [], color: 'green'}], labels: {x:'Time', y:'Velocity'}},
 				{title: 'a_x', graphID: 2, groupID: 0, pathList: [{points: [], color: 'red'}], labels: {x:'Time', y:'Acceleration'}},
 			];
+			graphIDIncrement = 2;
 
 	if (url.searchParams.has('preset')) {
 		let preset = url.searchParams.get('preset');
@@ -143,6 +143,7 @@
 			];
 			showControlButtons = false;
 			console.log('Kinematics preset');
+			graphIDIncrement = 2;
 		}
 		else if(preset === 'kinematics-v'){
 			graphs = [
@@ -153,6 +154,7 @@
 			showControlButtons = false;
 			groupIDs = [0, 1,2];
 			console.log('vert Kinematics preset');
+			graphIDIncrement = 2;
 		}
 		else if(preset === 'projectile'){
 			graphs = [
@@ -167,6 +169,7 @@
 			groupIDs = [0, 1];
 			showControlButtons = false;
 			console.log('Kinematics preset');
+			graphIDIncrement = 5;
 		}
 	}
 
