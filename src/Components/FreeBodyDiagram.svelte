@@ -9,7 +9,7 @@
 	import DragArrow from './DragArrow.svelte';
     import { Stage, Layer, Image} from 'svelte-konva';
 
-    import type { TaoItem, VectorArrow, Force, Pt } from './forceTypes';
+    import type { TaoItem, VectorArrow, Force, Pt } from '$lib/forceTypes';
 
     import { createEventDispatcher } from 'svelte'
 
@@ -67,12 +67,8 @@
 		editText: false,
 	};
 
-    let forceList: Force[] = [];
-	let lastForceId = 0;
-
-	let arrowList: VectorArrow[] = [];
-
-	let taoList: TaoItem[] = [];
+    export let forceList: Force[] = [];
+	let lastForceId:number = forceList.length;
 
 	let addNewForce = (comps: Pt) => {
 		console.log("Adding new force with components = " + JSON.stringify(comps));

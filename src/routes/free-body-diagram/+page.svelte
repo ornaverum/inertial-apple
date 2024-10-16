@@ -7,7 +7,8 @@
     import {TrashBinOutline, CirclePlusOutline, FileExportOutline, EditOutline, RefreshOutline} from 'flowbite-svelte-icons';
 	import EditLabel from '../../Components/EditLabel.svelte';
 	import Grid from '../../Components/Shared/Grid.svelte';
-  import FreeBodyDiagram from '../../Components/FreeBodyDiagram.svelte';
+	import FreeBodyDiagram from '../../Components/FreeBodyDiagram.svelte';
+	import type { TaoItem, VectorArrow, Force, Pt } from '$lib/forceTypes';
 
 	let name: string = 'Free Body Diagram';
 
@@ -37,7 +38,11 @@
 		showControlButtons = ctrl;
 	} 
 
-
+	type ForceList = {
+		forces: Force[];
+	}
+	let forceSets:ForceList[] = [];
+	let numForceSets = 0;
 
 </script>
 
@@ -49,7 +54,10 @@
 			>Show Net Force</Toggle>
 	</div >
 	<div id='capture'  bind:this={divToCapture} class='mx-auto w-max'>
-		<FreeBodyDiagram {width} {height} {showNetForce}/>
+		{#each forceSets as forceList, i}
+			<FreeBodyDiagram {forceList.forces} {width} {height} {showNetForce}/>
+		{/each}
+		
 	</div>
 
 	
